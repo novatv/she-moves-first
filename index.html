@@ -51,7 +51,10 @@
 .cue .dots{position:absolute;right:var(--pad);top:16px;z-index:3;display:flex;gap:8px}
 .cue .dots button{width:10px;height:10px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
 .cue .dots button[aria-current=true]{background:var(--pink)}
-.cue::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(180deg,transparent,rgba(8,7,10,.92))}
+.cue::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(180deg,transparent,rgba(8,7,10,.92));opacity:0;transition:opacity .9s ease}
+.cue.cue--video::after{opacity:1}
+.cue .cue-text{opacity:0;transition:opacity .9s ease;pointer-events:none}
+.cue.cue--video .cue-text{opacity:1;pointer-events:auto}
 .cue .cue-text{position:absolute;left:var(--pad);right:var(--pad);bottom:clamp(16px,3vw,34px);z-index:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .cue .cue-text p{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--white)}
 .cue .cue-text p b{color:var(--pink);font-weight:500}
@@ -59,7 +62,7 @@
 .lineup{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:34px}
 .lineup .dj{background:var(--paper);padding:clamp(22px,3vw,34px) clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:10px;min-height:170px}
 .lineup .dj i{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);font-style:normal}
-.lineup .dj b{font-family:var(--display);font-variation-settings:var(--cond);font-weight:900;text-transform:uppercase;font-size:clamp(28px,3.6vw,42px);line-height:.95;color:var(--white)}
+.lineup .dj b{font-family:var(--display);font-variation-settings:var(--cond);font-weight:900;text-transform:uppercase;font-size:clamp(22px,2.4vw,32px);overflow-wrap:anywhere;line-height:.95;color:var(--white)}
 .lineup .dj p{margin:0;color:var(--muted);font-size:14.5px}
 .lineup .dj a{margin-top:auto;align-self:flex-start;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
 .lineup .dj a:hover{color:var(--pink);border-color:var(--pink)}
@@ -88,11 +91,11 @@
   </div>
 </section>
 <script>(function(){var v=document.getElementById('cuevideo');if(window.innerWidth<760){v.querySelector('source').src='cue-16x9.mp4';v.load();}
-var slides=[].slice.call(document.querySelectorAll('.cue .slide')),dots=[].slice.call(document.querySelectorAll('.cue .dots button')),i=0,t;
-function show(n){i=(n+slides.length)%slides.length;slides.forEach(function(s,k){s.classList.toggle('on',k===i)});dots.forEach(function(d,k){d.setAttribute('aria-current',k===i?'true':'false')});if(i===1){v.currentTime=0;v.play&&v.play().catch(function(){})}else{v.pause&&v.pause()}}
+var cue=document.querySelector('.cue'),slides=[].slice.call(document.querySelectorAll('.cue .slide')),dots=[].slice.call(document.querySelectorAll('.cue .dots button')),i=0,t;
+function show(n){i=(n+slides.length)%slides.length;cue.classList.toggle('cue--video',i===1);slides.forEach(function(s,k){s.classList.toggle('on',k===i)});dots.forEach(function(d,k){d.setAttribute('aria-current',k===i?'true':'false')});if(i===1){v.currentTime=0;v.play&&v.play().catch(function(){})}else{v.pause&&v.pause()}}
 function arm(){clearTimeout(t);t=setTimeout(function(){show(i+1);arm()},i===0?7000:10000)}
 dots.forEach(function(d,k){d.addEventListener('click',function(){show(k);arm()})});
-var cue=document.querySelector('.cue'),x0=null;cue.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});cue.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){show(i+(dx<0?1:-1));arm()}x0=null});
+var x0=null;cue.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});cue.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){show(i+(dx<0?1:-1));arm()}x0=null});
 arm();})();</script>
 <section id="hero" class="hero">
   <div class="wrap">
