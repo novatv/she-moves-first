@@ -61,7 +61,7 @@
 .cue .cue-text{position:absolute;left:var(--pad);right:var(--pad);bottom:clamp(16px,3vw,34px);z-index:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .cue .cue-text p{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--white)}
 .cue .cue-text p b{color:var(--pink);font-weight:500}
-@media (max-width:760px){.cue{aspect-ratio:16/9}.cue .dots{top:10px}}
+@media (max-width:760px){.cue{aspect-ratio:16/9}.cue .dots{top:10px}.top .btn{padding:11px 14px}.lang-btn{padding:9px 11px}.top{gap:10px}}
 .lineup{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:34px}
 .lineup .dj{background:var(--paper);padding:clamp(22px,3vw,34px) clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:10px;min-height:170px}
 .lineup .dj i{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);font-style:normal}
@@ -90,17 +90,19 @@
 </header>
 <section class="cue" id="top" aria-label="She Moves First">
   <div class="slide on" data-slide="0"><a href="halloween-16x9.jpg" target="_blank" rel="noopener"><img src="halloween-16x9.jpg" width="1800" height="1013" alt="She Moves First · Halloween Edition · 31.10.2026 · Basement Amsterdam · KXAZANOVA, JHON BARRERA, DIEGO ALVIAREZ" fetchpriority="high"></a></div>
-  <div class="slide" data-slide="1"><video muted loop playsinline preload="metadata" poster="cue-poster.jpg" id="cuevideo"><source src="cue-21x9.mp4" type="video/mp4"></video></div>
-  <div class="dots" role="tablist" aria-label="Slides"><button type="button" aria-current="true" aria-label="Flyer"></button><button type="button" aria-label="Logo"></button></div>
+  <div class="slide" data-slide="1"><video muted playsinline preload="metadata" poster="promo-poster.jpg" id="promovideo"><source src="promo-20s.mp4" type="video/mp4"></video></div>
+  <div class="slide" data-slide="2"><video muted loop playsinline preload="metadata" poster="cue-poster.jpg" id="cuevideo"><source src="cue-21x9.mp4" type="video/mp4"></video></div>
+  <div class="dots" role="tablist" aria-label="Slides"><button type="button" aria-current="true" aria-label="Flyer"></button><button type="button" aria-label="Aftermovie"></button><button type="button" aria-label="Logo"></button></div>
   <div class="cue-text">
     <p><b>Next date</b> · Sat 31.10.2026 · Basement Amsterdam</p>
     <a class="btn" href="https://www.fourvenues.com/dale-reggaeton/P01Y" target="_blank" rel="noopener">Tickets</a>
   </div>
 </section>
-<script>(function(){var v=document.getElementById('cuevideo');if(window.innerWidth<760){v.querySelector('source').src='cue-16x9.mp4';v.load();}
-var cue=document.querySelector('.cue'),slides=[].slice.call(document.querySelectorAll('.cue .slide')),dots=[].slice.call(document.querySelectorAll('.cue .dots button')),i=0,t;
-function show(n){i=(n+slides.length)%slides.length;cue.classList.toggle('cue--video',i===1);slides.forEach(function(s,k){s.classList.toggle('on',k===i)});dots.forEach(function(d,k){d.setAttribute('aria-current',k===i?'true':'false')});if(i===1){v.currentTime=0;v.play&&v.play().catch(function(){})}else{v.pause&&v.pause()}}
-function arm(){clearTimeout(t);t=setTimeout(function(){show(i+1);arm()},i===0?7000:10000)}
+<script>(function(){var v=document.getElementById('cuevideo'),pv=document.getElementById('promovideo');if(window.innerWidth<760){v.querySelector('source').src='cue-16x9.mp4';v.load();}
+var cue=document.querySelector('.cue'),slides=[].slice.call(document.querySelectorAll('.cue .slide')),dots=[].slice.call(document.querySelectorAll('.cue .dots button')),i=0,t,dur=[7000,21000,10000];
+function show(n){i=(n+slides.length)%slides.length;cue.classList.toggle('cue--video',i>0);slides.forEach(function(s,k){s.classList.toggle('on',k===i);var vid=s.querySelector('video');if(vid){if(k===i){vid.currentTime=0;vid.play&&vid.play().catch(function(){})}else{vid.pause&&vid.pause()}}});dots.forEach(function(d,k){d.setAttribute('aria-current',k===i?'true':'false')})}
+function arm(){clearTimeout(t);t=setTimeout(function(){show(i+1);arm()},dur[i])}
+pv.addEventListener('ended',function(){if(i===1){show(2);arm()}});
 dots.forEach(function(d,k){d.addEventListener('click',function(){show(k);arm()})});
 var x0=null;cue.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});cue.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){show(i+(dx<0?1:-1));arm()}x0=null});
 arm();})();</script>
